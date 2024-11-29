@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مزادات كوريا</title>
+    <style>
+        /* Embed Cairo font directly */
+        @font-face {
+            font-family: 'Cairo';
+            src: url('https://fonts.gstatic.com/s/cairo/v20/SLXVc1nY6HkvangtZmpcWmhzfH5lWWgcQyyS4J0.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Cairo';
+            src: url('https://fonts.gstatic.com/s/cairo/v20/SLXVc1nY6HkvangtZmpcWmhzfH5l2WgcQyyS4J0.woff2') format('woff2');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', Arial, sans-serif !important;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        .images-page {
+            width: 210mm;
+            height: 297mm;
+            padding: 0mm;
+            background: white;
+            page-break-after: always;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2mm;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1F2937;
+            margin-bottom: 2mm;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #6B7280;
+        }
+
+        .image-grid {
+            display: table;
+            width: 100%;
+            border-spacing: 0;
+        }
+
+        .image-row {
+            display: table-row;
+            /* margin-bottom: 0mm; */
+        }
+
+        .image-cell {
+            display: table-cell;
+            width: 50%;
+            height: 67mm;
+            padding: 0.5mm;
+            vertical-align: middle;
+        }
+
+        .image-cell img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .image-grid-3 {
+            display: table;
+            width: 100%;
+            border-spacing: 0mm;
+        }
+
+        .image-cell-3 {
+            display: table-cell;
+            width: 33.333%;
+            padding: 0mm;
+        }
+        .image-cell-4 {
+            display: table-cell;
+            width: 25%;
+            padding: 0mm;
+        }
+
+        .page {
+            width: 210mm;
+            height: 297mm;
+            padding: 0mm;
+            page-break-after: always;
+            background: white;
+        }
+
+        .card {
+            background: white;
+            border-radius: 3mm;
+            padding: 6mm;
+            margin-bottom: 5mm;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4mm;
+        }
+
+        .price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2563EB;
+        }
+
+        .tags {
+            display: flex;
+            gap: 2mm;
+        }
+
+        .tag {
+            background: #EFF6FF;
+            color: #1D4ED8;
+            padding: 2mm 4mm;
+            border-radius: 3mm;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1F2937;
+            margin-bottom: 4mm;
+            border-right: 1mm solid #2563EB;
+            padding-right: 3mm;
+        }
+
+        .specs-grid {
+            display: table;
+            width: 100%;
+            border-spacing: 0mm;
+        }
+
+        .spec-item {
+            display: table-cell;
+            width: 33.333%;
+            background: #F9FAFB;
+            /* padding: 4mm; */
+            /* border-radius: 0mm; */
+            border: 1px solid #E5E7EB;
+        }
+
+        .spec-label {
+            color: #6B7280;
+            font-size: 14px;
+            margin-bottom: 1mm;
+            text-align: center; 
+        }
+
+        .spec-value {
+            color: #1F2937;
+            font-weight: 600;
+            text-align: center; 
+        }
+
+        .contact-button {
+            display: block;
+            width: 60mm;
+            margin: 8mm auto 0;
+            padding: 3mm 6mm;
+            background: #2563EB;
+            color: white;
+            text-align: center;
+            border-radius: 2mm;
+            font-weight: bold;
+            font-size: 16px;
+            border: none;
+        }
+
+        .inspection-image {
+            width: 100%;
+            border-radius: 2mm;
+            margin-bottom: 4mm;
+        }
+
+        /* Cover Page Styles */
+        .cover-page {
+            width: 210mm;
+            height: 297mm;
+            padding: 20mm;
+            background: white;
+            text-align: center;
+            page-break-after: always;
+        }
+
+        .cover-logo {
+            font-size: 48px;
+            font-weight: bold;
+            color: #1F2937;
+            margin-bottom: 10mm;
+        }
+
+        .cover-title {
+            font-size: 36px;
+            color: #2563EB;
+            margin-bottom: 20mm;
+        }
+
+        .cover-description {
+            font-size: 18px;
+            color: #4B5563;
+            line-height: 1.8;
+            margin-bottom: 30mm;
+            max-width: 150mm;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cover-contact {
+            font-size: 24px;
+            color: #1F2937;
+            margin-bottom: 10mm;
+        }
+
+    </style>
+</head>
+<body>
+    {% for content in contents %}
+    {% if loop.first %}
+    <!-- Cover Page - Only shown for first iteration -->
+    <div class="cover-page">
+        <img src="/Users/amd/my_scrapping/جديد.png" alt="">
+        <!-- <div class="cover-logo"></div>
+        <div class="cover-title">ابو محمد</div>
+        <div class="cover-description">
+            نقدم لك سهولة اقتناء سيارتك المثالية من مزادات كوريا بأسعار تنافسية. 
+            نضمن جودة السيارات من خلال فحص دقيق، ونعمل بكفاءة على المزادات 
+            للحصول على أفضل الصفقة. نتولى جميع التفاصيل من الشراء إلى الشحن 
+            لبلدك، لتجربة شراء موثوقة ومريحة.
+        </div>
+        <div class="cover-contact">
+            للتواصل: +821021676171
+        </div> -->
+    </div>
+    {% endif %}
+
+    <!-- Images Page -->
+    <div class="images-page">
+        <div class="image-grid">
+            <!-- Row 1 -->
+            <div class="image-row">
+                {% for image in content.images[0:2] %}
+                <div class="image-cell">
+                    <img src="{{ image }}" alt="">
+                </div>
+                {% endfor %}
+            </div>
+            <!-- Row 2 -->
+            <div class="image-row">
+                {% for image in content.images[2:4] %}
+                <div class="image-cell">
+                    <img src="{{ image }}" alt="">
+                </div>
+                {% endfor %}
+            </div>
+            <!-- Row 3 -->
+            <div class="image-row">
+                {% for image in content.images[-6:-3] %}
+                <div class="image-cell">
+                    <img src="{{ image }}" alt="">
+                </div>
+                {% endfor %}
+            </div>
+            <!-- Row 4 -->
+            <div class="image-row">
+                {% for image in content.images[-9:-7] %}
+                <div class="image-cell">
+                    <img src="{{ image }}" alt="">
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Details Page -->
+    <div class="page">
+        
+
+        <div class="card">
+            <div class="section-title">فحص السيارة</div>
+            <img src="{{ content.inspection_image }}" alt="" class="inspection-image">
+        </div>
+
+        <div class="card">
+            <div class="section-title">المواصفات</div>
+            <div class="specs-grid">
+                <div class="spec-item">
+                    <div class="spec-label">الموديل</div>
+                    <div class="spec-value">{{ content.models }}</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">السنة</div>
+                    <div class="spec-value">{{ content.year }}</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">المسافة</div>
+                    <div class="spec-value">{{ content.mileage }}</div>
+                </div>
+            </div>
+            <div class="specs-grid" style="margin-top: 3mm;">
+                <div class="spec-item">
+                    <div class="spec-label">نوع الوقود</div>
+                    <div class="spec-value">{{ content.feul }}</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">اللون</div>
+                    <div class="spec-value">{{ content.color }}</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">ناقل الحركة</div>
+                    <div class="spec-value">{{ content.mission }}</div>
+                </div>
+                
+            </div>
+            <div class="specs-grid" style="margin-top: 3mm;">
+                <div class="spec-item">
+                    <div class="spec-label">المقاعد</div>
+                    <div class="spec-value">{% if content.seats.0 %}{{ content.seats.0 }} مقاعد{% endif %}</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">العجلات</div>
+                    <div class="spec-value">{{ content.wheel }}</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">القدرة</div>
+                    <div class="spec-value">{{ content.power }}</div>
+                </div>
+                
+            </div>
+            <button class="contact-button">تواصل معنا للحجز</button>
+        </div>
+    </div>
+    {% endfor %}
+</body>
+</html>
