@@ -8,6 +8,7 @@ from concurrent.futures import ThreadPoolExecutor
 import json
 from datetime import datetime,date
 import pandas as pd
+from .comparison import *
 
 TODAY=date.today()
 
@@ -51,21 +52,60 @@ def scrap_autohub_chunks_async(urls, selector, output_file):
                 url = futures[future]
                 try:
                     future.result()  # Wait for the result (if needed)
-                    print(i)
+                    print(f"{i} of {len(urls)}: Successfully processed {url}")
                 except Exception as e:
                     file.write(f"Error processing {url}: {e}\n")
-file_path=f'scrape_now.csv'
+file_path=f'autohub/autuhub_data/autohub_urls/autohub_urls_2025-04-15.json'
+with open(file_path) as j:
+    urls = json.load(j)['car_urls']
+# with open(f'autohub/autuhub_data/final_json/detail_json_mnaf_2025-04-08.json') as j:
+#     data = json.load(j)
+#     print(len(data))
+# df_urls = pd.DataFrame(urls)
+# df_urls = df_urls[df_urls['entries']!='']
+# df_data = pd.DataFrame(data)
+# scrapped = df_urls[df_urls['entries'].isin(df_data['entry'])]['car_urls'].tolist()
+# print(len(scrapped))
+# def check_urls(*file_path):
+
+#     for i in file_path:
+#         with open(i) as j:
+#             urls = json.load(j)['car_urls']
+#             print(len(urls)) 
+
+# check_urls(file_path,'autohub/autuhub_data/autohub_urls/autohub_urls_2024-12-04.json')
+# data_path = f'autohub/autuhub_data/autohub_urls/autohub_urls_2024-12-10.json'
+# with open(data_path) as j:
+#     lst = json.load(j)
 # with open(file_path) as j:
-    
-#     urls = json.load(j)['car_urls']
-# print(len(urls)) 
-df = pd.read_csv(file_path)
-urls = df['urls'].tolist()[63:]
+#     ids = json.load(j)
+
+# urls =[]    
+# for i in ids:
+#     for n in lst:
+#         if i['ids'] not in n['car_ids']:
+#             print(i['car_urls'])
+
+# unscraped = []
+# for i,u in zip(ids['ids'],ids['car_urls']):
+#     if i not in [n['car_ids'] for n in lst]:
+#         unscraped.append(u)
+# print(len(unscraped))
+
+            
+# from .test import unscraped_urls
+# df = pd.read_csv(file_path)
+# urls = df['urls'].tolist()[63:]
+# file_path=f'autohub/autuhub_data/autohub_urls/autohub_urls_2025-01-14.json'
+# with open(file_path) as j:
+#     url = json.load(j)
+# urls=[i for i in url['car_urls']]
+# print(len(urls[794:]))
 selector = '.con_top'  # Adjust this selector based on your needs
-output_file = f'autohub_data_{TODAY}2.txt'  # Specify the output file name
+output_file = f'autohub/autuhub_data/detailed_file/autohub_data_{TODAY}korcars.txt'  # Specify the output file name
 
-# Run the scraping function
-
+# # # # Run the scraping function
+# urls = get_unscrapped()
 scrap_autohub_chunks_async(urls, selector, output_file)
 
 

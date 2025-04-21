@@ -1,5 +1,4 @@
 from datetime import date,datetime
-from translate import Translate
 from parser import Parser
 from utils import *
 from transelations import translated_models,makes,make_model_translated
@@ -12,25 +11,28 @@ import re
 
 
 TODAY = date.today()
+AUCTION_DATE = "18/04/2025 08:00 AM"
 class AutobellParser(Parser):
     def __init__(self):
         super().__init__()
-        self.html = f'/Users/amd/my_scrapping/autobell/autobell_data/detailed_file/autobell_2024_11_28.txt'
+        self.html = f'autobell/autobell_data/detailed_file/autobell_data_{TODAY}.txt'
         self.images =[]
 
     def get_price(self,price):
-        return float(price.replace(',',''))*10000*0.0027
+        return float(price.replace(',','').replace('.',''))*10000*0.00068
 
-    def get_inspection_image(self,image):
+    def get_inspection_image(image):
+        num=image.split('2F')[4][:-1]
         id1 = image.split('2F')[-1].split('.')[0][:-3]
         id2 = image.split('3F')[-1].split('&')[0]
         id0 = id1[1:5]
-        return f'https://auction.autobell.co.kr/FileUpDown/1100/valimg/{id0}/{id1}.jpg?={id2}'
+        return f'https://auction.autobell.co.kr/FileUpDown/{num}/valimg/{id0}/{id1}.jpg'
     
     def get_auction_date(self):
         with open(self.html,'r',encoding='utf-8') as file:
             html = file.read()
         date = self.get_soup(html).find_all(class_='select-area large')[0].find('option',selected=True).text.strip()
+        print(date)
         date = str(datetime.strptime(date.split()[-2],'%Y-%m-%d'))
         return date
 
@@ -147,15 +149,16 @@ class AutobellParser(Parser):
             print(f"{count} of {len(car_class)}")
             try:
                 car_data = self.parse_data(
+                    url=f"https://auction.autobell.co.kr/auction/exhibitView.do?acc={i.a.attrs['acc']}&gn={i.a.attrs['gn'][:-2]}%3D%3D&rc={i.a.attrs['rc']}&atn={i.a.attrs['atn']}",
                     image=i.find('img')['src'],
                     icon='https://scontent.fjed6-1.fna.fbcdn.net/v/t39.30808-6/248067471_107015228472423_10446852770529522_n.png?_nc_cat=104&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=AUVFc6zhpHoQ7kNvgFY6J1V&_nc_oc=AdhttuqxX6pnC6Z2PgCGKCMnXUfY3b_JbVrXvm6Wz3g-KB842YlxzGm8__FhhGCNdROXpXqQ7rTXGsYPrMYLkXAZ&_nc_zt=23&_nc_ht=scontent.fjed6-1.fna&_nc_gid=AI8RdztmlzbeZw31KlHQS7-&oh=00_AYBEfZ_hKI2U_aJYVSyJNIhRL8kmJ7Z0TQx1uoabSTWl6Q&oe=673686E4',
                     auction_name="autobell",
-                    auction_date=self.get_auction_date(),
+                    auction_date=AUCTION_DATE,
                     title=i.find(class_='car-name').text,
-                    price=self.get_price(i.find(class_='price-box').find(class_='num').text.strip()),
-                    year=i.find(class_='option').span.text,
+                    price=i.find(class_='price-box').find(class_='num').text.strip(),
+                    year=int(i.find(class_='option').span.text),
                     mileage=i.find(class_='option').find_all('span')[3].text.strip().split()[0],
-                    feul=i.find(class_='option').find_all('span')[5].text,
+                    fuel=i.find(class_='option').find_all('span')[5].text,
                     entry=i.find(class_='entry-info').text.split()[-1],
                     power=i.find(class_='option').find_all('span')[2].text,
                     color=i.find(class_='option').find_all('span')[4].text.strip(),
@@ -166,28 +169,28 @@ class AutobellParser(Parser):
             except AttributeError as e:
                 print(f"Error parsing car data: {e}")
                 continue
+        dict_list = filter_cars_by_year(dict_list,2010)
         count=0
         for i in dict_list:
             count+=1
             print(f"{count} of {len(dict_list)}")
             try:
+                
                 ids = self.parse_ids(i['image'])
-                images = self.get_onload_images(ids)
-                i['images'] = self.run_checker(images)
-                i['inspection_image'] = f"<img src='{self.get_inspection_image(i['image'])}'><img>"
-                i['make'] = i['title'].split()[0].replace('[','').replace(']','')
+                # images = self.get_onload_images(ids)
+                # i['images'] = self.run_checker(images)
+                i['root_title'] = i['title']
+                i['make'] = i['title'].split()[0].replace('[','').replace(']','') if i['title'].split()[0] != 'The' and i['title'].split()[0] != 'New' and i['title'].split()[0] != 'All' and i['title'].split()[0] != 'All-New' else i['title'].split()[2]
+                # i['inspection_image'] = f"<img class='inspection_image' src='{self.get_inspection_image(i['image'])}'><img>"
                 i['model'] = i['title'].split()[1:]
                 i['car_ids'] = ids[2]
+                i['category'] = 'auction'
+                i['car_identifire'] = ids[2]
             except Exception as e:
                 print(f"Error parsing car data: {e}")
                 continue
-        print(dict_list[0]['make'])
-     
-        untranslated_makes=[]
-        for i in (set([i['make'] for i in dict_list])):
-            if i not in [n[0] for n in makes]:
-                untranslated_makes.append(i)
-        print(untranslated_makes)
+        
+        # self.export_json(dict_list,f'autobell/autobell_data/final_json/detail_json_{TODAY}.json')
         translate_words('make',dict_list,makes)
         process_model(dict_list)
         for i in dict_list:
@@ -196,7 +199,14 @@ class AutobellParser(Parser):
                     i['models']= n[1]
         process_title(dict_list)
         proccess_data(dict_list)
+        for car in dict_list:
+            if not 'make' in car:
+                print(car['title'])
+        for i in dict_list:
+            if i['make'] == 'مرسيدس':
+                i['models'] = f"{i['models']} {i['model'][1]}"
         self.export_json(dict_list,f'autobell/autobell_data/final_json/detail_json_{TODAY}.json')
-    
+        return dict_list
 
-        
+
+

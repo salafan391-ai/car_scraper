@@ -18,7 +18,7 @@ class ScrapeUrls:
             for attempt in range(retries):
                 try:
                     # Set a timeout for the request
-                    async with async_timeout.timeout(30):  # Timeout after 10 seconds
+                    async with async_timeout.timeout(60):  # Timeout after 10 seconds
                         async with session.get(url, ssl=False) as response:
                             html = await response.text()
                             # Parse the HTML to extract the car detail
@@ -37,21 +37,22 @@ class ScrapeUrls:
                     progress_bar.update(1)  # Update the progress bar for each completed task
 
     async def scrap_autohub_chunks_async(self, max_concurrency=5):
-        # Limit concurrency with a semaphore
         semaphore = asyncio.Semaphore(max_concurrency)
 
         async with aiohttp.ClientSession() as session:
-            # Create a progress bar
             with tqdm(total=len(self.urls), desc="Fetching car details", unit="car") as pbar:
-                tasks = []
-                for url in self.urls:
-                    task = self.fetch_car_detail(session, url, semaphore, pbar)  # Pass progress bar to the function
-                    tasks.append(task)
+                tasks = [
+                    self.fetch_car_detail(session, url, semaphore, pbar)
+                    for url in self.urls
+                ]
 
-                # Run all tasks concurrently
-                results = await asyncio.gather(*tasks)
+                # Create the file immediately
+                with open(f"{self.output_text_file}.txt", 'w', encoding='utf-8') as f:
+                    f.write(f"Scraping started at {TODAY}\n\n")
+                    f.flush()
 
-            # Write the results to the file
-            with open(f"{self.output_text_file}.txt", 'w', encoding='utf-8') as f:
-                for result in results:
-                    f.write(str(result) + '\n')
+                    # Write results as they come
+                    for coro in asyncio.as_completed(tasks):
+                        result = await coro
+                        f.write(result + '\n')
+                        f.flush()  # Ensure it's written to disk immediately

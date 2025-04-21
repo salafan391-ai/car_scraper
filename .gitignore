@@ -5,3 +5,7 @@
 __pycache__
 .DS_Store
 venv
+*.pdf
+*.html
+.ipynb_checkpoints
+.idea/

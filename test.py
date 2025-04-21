@@ -49,17 +49,23 @@
 # with ThreadPoolExecutor(max_workers=4) as executor:  # Adjust workers based on your system's CPU
 #     executor.map(export_to_pdf, car_makes)
 
-import requests
+# import requests
 from bs4 import BeautifulSoup as bs
 
-url = "https://www.sellcarauction.co.kr/newfront/onlineAuc/on/onlineAuc_on_detail.do?receivecd=RC202411270221"
-headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36"
-}
+# url = "https://www.sellcarauction.co.kr/newfront/onlineAuc/on/onlineAuc_on_detail.do?receivecd=RC202411270221"
+# headers = {
+#     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36"
+# }
 
-response = requests.get(url, headers=headers, verify=False)
-if response.status_code == 200:
-    soup = bs(response.text,'html.parser')
-    print(soup.find(class_='car_blueprint'))
-else:
-    print(f"Failed to fetch the page. Status code: {response.status_code}")
+# response = requests.get(url, headers=headers, verify=False)
+# if response.status_code == 200:
+#     soup = bs(response.text,'html.parser')
+#     print(soup.find(class_='car_blueprint'))
+# else:
+#     print(f"Failed to fetch the page. Status code: {response.status_code}")
+with open('autohub_data_2025-01-07.txt') as f:
+    data = f.read()
+
+soup = bs(data,'html.parser')
+cars = soup.find_all(class_='con_top')
+print(len(cars))

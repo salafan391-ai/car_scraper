@@ -1,10 +1,10 @@
-from transelations import translated_models,colors,missions,feul,make_model_translated
+from transelations import translated_models,colors,missions,fuel,make_model_translated
 from junks import junks
 import re
 import logging
 
-def filter_cars_by_year(data):
-    return [car for car in data if car.get('year', 0) > 2019]
+def filter_cars_by_year(data, year):
+    return [car for car in data if car.get('year', 0) > year]
 
 
 def translate_words(word, filtered_cars, translated_dict):
@@ -12,6 +12,8 @@ def translate_words(word, filtered_cars, translated_dict):
     for car in filtered_cars:
         if car[word] in translation_map:
             car[word] = translation_map[car[word]]
+
+ 
 
 
 def get_set_words(filtered_cars, word, translated_dict):
@@ -59,11 +61,11 @@ def get_make(filtered_cars, translated):
 
 def proccess_data(filtered_cars):
     # Translating non-English fields to standardized terms
-    print("Fuel Types:", get_set_words(filtered_cars, 'feul', feul))
+    print("Fuel Types:", get_set_words(filtered_cars, 'fuel', fuel))
     print("Missions:", get_set_words(filtered_cars, 'mission', missions))
     print("Colors:", get_set_words(filtered_cars, 'color', colors))
     # Process models, then apply translations
-    translate_words('feul', filtered_cars, feul)
+    translate_words('fuel', filtered_cars, fuel)
     translate_words('mission', filtered_cars, missions)
     translate_words('color', filtered_cars, colors)
    
@@ -278,12 +280,12 @@ def process_title(data):
         generation = extract_generation_patterns(i['title'])
 
         # Assign extracted values to dictionary
-        i['seats'] = seats[0] if seats else ''
+        i['seats'] = int(seats[0][0]) if seats else 0
         i['people'] = people[0] if people else ''
         i['wheel'] = wheel[0] if wheel else ''
         i['points'] = points[0] if points else ''
         i['shape'] = shape[0] if shape else ''
-        i['doors'] = doors[0] if doors else ''
+        i['doors'] = int(doors[0][0]) if doors else 0
         i['fuel_type'] = fuel[0] if fuel else ''
         i['generation'] = generation[0] if generation else ''
         i['cc'] = cc[0] if cc else ''
@@ -320,6 +322,22 @@ def extract_vehicle_model(text):
     # Find all matches
     return re.findall(pattern, text, flags=re.IGNORECASE)
 
+def extract_lotte_model(text):
+    keywords = [i[0] for i in make_model_translated]
+    pattern = r'\b(?:' + '|'.join(re.escape(keyword) for keyword in keywords) + r')\b'
+    return re.findall(pattern, text, flags=re.IGNORECASE)
+
+
+def process_model_lotte(data):
+    for i in data:
+        i['models'] = extract_lotte_model(i['title'])
+    unextracted_models = []
+    for i in data:
+        if not i['models']:
+            unextracted_models.append(i['title'])
+        else:
+            i['models'] = i['models'][0].strip()
+    print('Unextracted Models:', set(unextracted_models))
 
 def process_model(data):
     for i in data:
@@ -338,3 +356,5 @@ def process_model(data):
     #         if i['models'] == n[0]:
     #             i['models'] = n[1]
     #             break
+
+
