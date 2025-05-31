@@ -1,0 +1,14 @@
+*{padding:0;margin:0;}
+		img{border:none;}
+		.chk_Box{margin-bottom:10px;}
+		.car_blueprint{position:relative;width:510px;height:311px;margin:0 auto;}
+		.car_blueprint ul{position:absolute;width:106px;height:311px;}
+		.car_blueprint ul li{position:absolute;left:0;top:0;display:none;}
+		.car_blueprint ul li.on{display:block;}
+		.car_blueprint .p0101_0107{left:0;top:0;}
+		.car_blueprint .p0201_0205{left:107px;top:0;width:134px;}
+		.car_blueprint .p0301_0317{left:255px;top:0;width:137px;}
+		.car_blueprint .p0401_0407{left:404px;top:0;}
+		.box_checksheet{margin-top:20px;}
+		.box_checksheet label{margin-right:10px;}
+		#clear_All{margin-left:20px;}
